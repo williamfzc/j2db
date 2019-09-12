@@ -32,7 +32,8 @@ class MySQLManager(BaseManager):
             return False
         try:
             self.engine.execute('SELECT "HELLO"')
-        except OperationalError:
+        except OperationalError as e:
+            logger.error(e)
             return False
         return True
 
