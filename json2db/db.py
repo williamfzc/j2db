@@ -46,8 +46,22 @@ class BaseManager(object):
         del self.models[table_name]
         logger.info(f"model of {table_name} removed")
 
+    def apply_action(self, action_name: str, *args, **kwargs) -> bool:
+        action_dict: typing.Dict[str, typing.Callable] = {
+            "insert": self.insert,
+            # NOTIMPLEMENTED
+            # 'update': self.update,
+            # FORBIDDEN
+            # 'query': self.query,
+            # 'remove': self.remove,
+        }
+        if action_name not in action_dict:
+            logger.warning(f"action {action_name} not supported")
+            return False
+        return action_dict[action_name](*args, **kwargs)
+
     # TODO maybe these events should be handled by queue?
-    def insert(self, data):
+    def insert(self, data, *_, **__) -> bool:
         try:
             with session_scope(self.session_maker) as session:
                 session.add(data)

@@ -19,10 +19,11 @@ class Server(object):
         self.port: int = port
         self.db_manager: typing.Optional[BaseManager] = None
 
-    def handler(self, tag: str, content: str):
+    def handler(self, tag: str, action: str, content: str):
         logger.info(f"event received")
         logger.debug(f"tag: {tag}")
         logger.debug(f"content: {content}")
+        logger.debug(f"action: {action}")
         resp_dict = {"tag": tag, "content": content}
 
         # format check
@@ -37,10 +38,10 @@ class Server(object):
             return errors.TagInvalidError(resp_dict)
         model = self.db_manager.models[tag]
 
-        # upload
+        # operation
         content_dict = toolbox.json2dict(content)
         data = model(**content_dict)
-        operate_result = self.db_manager.insert(data)
+        operate_result = self.db_manager.apply_action(action, data)
         if not operate_result:
             return errors.DBOperatorError(resp_dict)
 

@@ -10,9 +10,11 @@ def register(app: FastAPI, handler: typing.Callable):
         return {"Hello": "World"}
 
     @app.post("/api/json/form")
-    def json_upload_form(*, tag: str = Form(...), content: str = Form(...)):
-        return handler(tag, content)
+    def json_upload_form(
+        *, tag: str = Form(...), action: str = Form(...), content: str = Form(...)
+    ):
+        return handler(tag, action, content)
 
     @app.post("/api/json/raw")
     def json_upload_raw(*, request: JsonRequest):
-        return handler(request.tag, request.content)
+        return handler(request.tag, request.action, request.content)

@@ -11,7 +11,7 @@ from json2db.db import MySQLManager, SQLiteManager
 
 URL_PREFIX = r"http://127.0.0.1:9410"
 URL_HELLO = f"{URL_PREFIX}/"
-URL_PARAMS = f"{URL_PREFIX}/api/json/params"
+URL_RAW = f"{URL_PREFIX}/api/json/raw"
 URL_FORM = f"{URL_PREFIX}/api/json/form"
 
 
@@ -23,14 +23,24 @@ class SomeModel(BaseModel):
 
 
 REQUEST = {
-    "both_invalid": {"tag": "thisisinvalidtag", "content": "{}abcde"},
+    "both_invalid": {
+        "tag": "thisisinvalidtag",
+        "action": "insert",
+        "content": "{}abcde",
+    },
     "invalid_tag": {
         "tag": "thisisinvalidtag",
+        "action": "insert",
         "content": json.dumps({"id": 100, "name": "name1"}),
     },
-    "invalid_content": {"tag": "some_table", "content": "{}cbdsalkj"},
+    "invalid_content": {
+        "tag": "some_table",
+        "action": "insert",
+        "content": "{}cbdsalkj",
+    },
     "both_valid": {
         "tag": "some_table",
+        "action": "insert",
         "content": json.dumps({"id": 101, "name": "name2"}),
     },
 }
@@ -39,12 +49,14 @@ REQUEST = {
 mysql_manager = MySQLManager(
     url="127.0.0.1", port=33066, user="root", password="root", db_name="some_test"
 )
-# sqlite_manager = SQLiteManager("/path/to/your/db")
+
+
+sqlite_manager = SQLiteManager("/Users/fengzhangchi/github_workspace/json2db/test.db")
 
 
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
-    manager = mysql_manager
+    manager = sqlite_manager
     manager.connect()
     manager.add_model(SomeModel)
 
@@ -82,6 +94,6 @@ def test_form_json_valid():
 
 
 def test_params_json_invalid():
-    resp = requests.post(URL_PARAMS, json=REQUEST["invalid_content"])
+    resp = requests.post(URL_RAW, json=REQUEST["invalid_content"])
     assert resp.ok
     assert resp.json()["error"] == "json_invalid"
