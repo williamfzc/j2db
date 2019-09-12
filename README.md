@@ -1,2 +1,3 @@
 # json2db
-json request -> safety check -> standardize -> ORM -> database
+
+standard and safe way to upload your json to db
