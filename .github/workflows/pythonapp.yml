@@ -24,6 +24,7 @@ jobs:
         run: |
           pip install .
           pip install requests
+          pip install cryptography
       - name: Lint with flake8
         run: |
           pip install flake8
