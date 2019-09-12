@@ -19,5 +19,6 @@ setup(
         'fastapi',
         'uvicorn',
         'pydantic',
+        'python-multipart'
     ],
 )

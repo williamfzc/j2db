@@ -1,19 +1,12 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, Form
 import uvicorn
 
 from json2db import toolbox
 from json2db import errors
 from json2db import constants
+from json2db.models.request import JsonRequest
 
 app = FastAPI()
-
-
-class JsonRequest(BaseModel):
-    # for matching models
-    tag: str = ''
-    # json
-    content: str = ''
 
 
 @app.get("/")
@@ -21,8 +14,20 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/api/json/")
-def json_upload(request: JsonRequest):
+@app.post("/api/json/form")
+def json_upload_form(*, tag: str = Form(...), content: str = Form(...)):
+    origin_request = {
+        'tag': tag,
+        'content': content,
+    }
+    # format check
+    if not toolbox.is_json_valid(content):
+        return errors.JsonInvalidError(origin_request)
+    return origin_request
+
+
+@app.post("/api/json/params")
+def json_upload(*, request: JsonRequest):
     # format check
     if not toolbox.is_json_valid(request.content):
         return errors.JsonInvalidError(request)
