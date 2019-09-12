@@ -28,27 +28,25 @@ def json_upload(*, request: JsonRequest):
 
 # --- router end ---
 
+
 def handler(tag: str, content: str):
-    logger.info(f'event received')
-    logger.debug(f'tag: {tag}')
-    logger.debug(f'content: {content}')
+    logger.info(f"event received")
+    logger.debug(f"tag: {tag}")
+    logger.debug(f"content: {content}")
 
     # format check
-    logger.debug('format check ...')
+    logger.debug("format check ...")
     if not toolbox.is_json_valid(content):
-        logger.warning(f'json invalid')
-        return errors.JsonInvalidError({
-            'tag': tag,
-            'content': content,
-        })
+        logger.warning("json invalid")
+        return errors.JsonInvalidError({"tag": tag, "content": content})
 
     # TODO orm check
-    logger.debug('orm check ...')
+    logger.debug("orm check ...")
 
     # TODO write db
-    logger.debug('try to write db ...')
+    logger.debug("try to write db ...")
 
-    return 'ok'
+    return "ok"
 
 
 def start_server(port: int = None):
