@@ -23,14 +23,14 @@ def my_fixture():
     manager = MySQLManager(
         url="127.0.0.1",
         port=33066,
-        user="user",
-        password="pwd",
+        user="root",
+        password="root",
         db_name="some_test",
     )
     manager.connect()
 
     s = Server()
-    s.init_db(manager)
+    s.init_db(manager, create_tables=True)
     p = Process(target=s.start)
     p.start()
     time.sleep(3)
