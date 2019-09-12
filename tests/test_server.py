@@ -78,7 +78,7 @@ def test_form_json_tag_invalid():
 def test_form_json_valid():
     resp = requests.post(URL_FORM, data=REQUEST["both_valid"])
     assert resp.ok
-    assert resp.text == "ok"
+    assert resp.text == '"ok"'
 
 
 def test_params_json_invalid():
