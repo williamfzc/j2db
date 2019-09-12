@@ -31,14 +31,10 @@ class BaseManager(object):
         raise NotImplementedError
 
     def connect(self, *args, **kwargs):
-        self.engine = create_engine(
-            self.build_connect_command(),
-            *args,
-            **kwargs,
-        )
+        self.engine = create_engine(self.build_connect_command(), *args, **kwargs)
         self.session_maker = scoped_session(sessionmaker(bind=self.engine))
         assert self.heartbeat(), "connect failed"
-        logger.info('connected')
+        logger.info("connected")
 
     def add_model(self, model: BaseModel):
         table_name = model.__tablename__
@@ -66,15 +62,24 @@ class BaseManager(object):
 class SQLiteManager(BaseManager):
     def __init__(self, path_to_db: str, *args, **kwargs):
         super(SQLiteManager, self).__init__(*args, **kwargs)
-        assert os.path.isfile(path_to_db), f'db {path_to_db} not existed'
+        assert os.path.isfile(path_to_db), f"db {path_to_db} not existed"
         self.path: str = path_to_db
 
     def build_connect_command(self):
-        return f'sqlite:///{self.path}'
+        return f"sqlite:///{self.path}"
 
 
 class MySQLManager(BaseManager):
-    def __init__(self, url: str, port: int, user: str, password: str, db_name: str, *args, **kwargs):
+    def __init__(
+        self,
+        url: str,
+        port: int,
+        user: str,
+        password: str,
+        db_name: str,
+        *args,
+        **kwargs,
+    ):
         super(MySQLManager, self).__init__(*args, **kwargs)
         self.url: str = url
         self.port: int = port
