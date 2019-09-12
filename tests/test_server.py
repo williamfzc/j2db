@@ -22,7 +22,7 @@ class SomeModel(BaseModel):
 def my_fixture():
     manager = MySQLManager(
         url="127.0.0.1",
-        port=3306,
+        port=33066,
         user="user",
         password="pwd",
         db_name="some_test",

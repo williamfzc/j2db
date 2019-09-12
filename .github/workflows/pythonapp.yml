@@ -11,6 +11,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: mirromutth/mysql-action@v1.1
         with:
+          host port: 33066
           mysql database: 'some_test'
           mysql root password: 'root'
           mysql user: 'user'
