@@ -15,5 +15,5 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
     ],
-    install_requires=["fastapi", "uvicorn", "pydantic", "python-multipart"],
+    install_requires=["fastapi", "uvicorn", "pydantic", "python-multipart", "loguru"],
 )
