@@ -16,10 +16,7 @@ def read_root():
 
 @app.post("/api/json/form")
 def json_upload_form(*, tag: str = Form(...), content: str = Form(...)):
-    origin_request = {
-        'tag': tag,
-        'content': content,
-    }
+    origin_request = {"tag": tag, "content": content}
     # format check
     if not toolbox.is_json_valid(content):
         return errors.JsonInvalidError(origin_request)
@@ -38,13 +35,8 @@ def start_server(port: int = None):
     if not port:
         port = constants.PORT
 
-    uvicorn.run(
-        app,
-        host="0.0.0.0",
-        port=port,
-        log_level=constants.SERVER_LOG_LEVEL,
-    )
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level=constants.SERVER_LOG_LEVEL)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start_server()

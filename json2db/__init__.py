@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__author__ = r'williamfzc'
-__author_email__ = 'fengzc@vip.qq.com'
-__license__ = r'MIT'
-__url__ = r'https://github.com/williamfzc/json2db'
+__author__ = r"williamfzc"
+__author_email__ = r"fengzc@vip.qq.com"
+__license__ = r"MIT"
+__url__ = r"https://github.com/williamfzc/json2db"
