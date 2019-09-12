@@ -22,5 +22,6 @@ setup(
         "python-multipart",
         "loguru",
         "sqlalchemy",
+        "PyMySQL",
     ],
 )
