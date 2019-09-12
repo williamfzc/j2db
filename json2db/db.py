@@ -56,19 +56,24 @@ class MySQLManager(BaseManager):
     def add_model(self, model: BaseModel):
         table_name = model.__tablename__
         self.models[table_name] = model
-        logger.info(f'model of {table_name} added')
+        logger.info(f"model of {table_name} added")
 
     def remove_model(self, model: BaseModel):
         table_name = model.__tablename__
         del self.models[table_name]
-        logger.info(f'model of {table_name} removed')
+        logger.info(f"model of {table_name} removed")
 
     # TODO maybe these events should be handled by queue?
     def insert(self, data):
-        with session_scope(self.session_maker) as session:
-            session.add(data)
-            session.commit()
-            session.flush()
+        try:
+            with session_scope(self.session_maker) as session:
+                session.add(data)
+                session.commit()
+                session.flush()
+        except:
+            return False
+        else:
+            return True
 
 
 @contextlib.contextmanager
@@ -80,5 +85,6 @@ def session_scope(maker: typing.Type):
     except Exception as e:
         logger.error(e)
         session.rollback()
+        raise e
     finally:
         session.close()

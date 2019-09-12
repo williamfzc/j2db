@@ -1,60 +1,63 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI
 import uvicorn
+import typing
 from loguru import logger
 
 from json2db import toolbox
 from json2db import errors
 from json2db import constants
-from json2db.request import JsonRequest
+from json2db import router
+from json2db.db import BaseManager
 
 app = FastAPI()
 
 
-# --- router ---
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+class Server(object):
+    def __init__(self, port: int = None):
+        if not port:
+            port = constants.PORT
+        self.port: int = port
+        self.db_manager: typing.Optional[BaseManager] = None
 
+    def handler(self, tag: str, content: str):
+        logger.info(f"event received")
+        logger.debug(f"tag: {tag}")
+        logger.debug(f"content: {content}")
+        resp_dict = {"tag": tag, "content": content}
 
-@app.post("/api/json/form")
-def json_upload_form(*, tag: str = Form(...), content: str = Form(...)):
-    return handler(tag, content)
+        # format check
+        logger.debug("format check ...")
+        if not toolbox.is_json_valid(content):
+            logger.warning("json invalid")
+            return errors.JsonInvalidError(resp_dict)
 
+        # tag check
+        logger.debug("tag check ...")
+        if tag not in self.db_manager.models:
+            return errors.TagInvalidError(resp_dict)
+        model = self.db_manager.models[tag]
 
-@app.post("/api/json/params")
-def json_upload(*, request: JsonRequest):
-    return handler(request.tag, request.content)
+        # upload
+        content_dict = toolbox.json2dict(content)
+        data = model(**content_dict)
+        operate_result = self.db_manager.insert(data)
+        if not operate_result:
+            return errors.DBOperatorError(resp_dict)
 
+        # TODO
+        return "ok"
 
-# --- router end ---
+    def init_db(self, db: BaseManager):
+        self.db_manager = db
 
-
-def handler(tag: str, content: str):
-    logger.info(f"event received")
-    logger.debug(f"tag: {tag}")
-    logger.debug(f"content: {content}")
-
-    # format check
-    logger.debug("format check ...")
-    if not toolbox.is_json_valid(content):
-        logger.warning("json invalid")
-        return errors.JsonInvalidError({"tag": tag, "content": content})
-
-    # TODO orm check
-    logger.debug("orm check ...")
-
-    # TODO write db
-    logger.debug("try to write db ...")
-
-    return "ok"
-
-
-def start_server(port: int = None):
-    if not port:
-        port = constants.PORT
-
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level=constants.SERVER_LOG_LEVEL)
+    def start(self):
+        assert self.db_manager, "init db first"
+        router.register(app, self.handler)
+        uvicorn.run(
+            app, host="0.0.0.0", port=self.port, log_level=constants.SERVER_LOG_LEVEL
+        )
 
 
 if __name__ == "__main__":
-    start_server()
+    s = Server()
+    s.start()
