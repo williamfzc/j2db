@@ -7,7 +7,7 @@ from json2db import toolbox
 from json2db import errors
 from json2db import constants
 from json2db import router
-from json2db.db import BaseManager
+from json2db.db import BaseManager, BaseModel
 
 app = FastAPI()
 
@@ -47,8 +47,11 @@ class Server(object):
         # TODO
         return "ok"
 
-    def init_db(self, db: BaseManager):
+    def init_db(self, db: BaseManager, create_tables: bool = None):
         self.db_manager = db
+
+        if create_tables:
+            BaseModel.metadata.create_all(self.db_manager.engine)
 
     def start(self):
         assert self.db_manager, "init db first"
@@ -56,8 +59,3 @@ class Server(object):
         uvicorn.run(
             app, host="0.0.0.0", port=self.port, log_level=constants.SERVER_LOG_LEVEL
         )
-
-
-if __name__ == "__main__":
-    s = Server()
-    s.start()
