@@ -6,25 +6,15 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 import contextlib
 from loguru import logger
 import typing
+import os
 
 BaseModel = declarative_base()
 
 
 class BaseManager(object):
-    pass
-
-
-class MySQLManager(BaseManager):
-    def __init__(self, url: str, port: int, user: str, password: str, db_name: str):
-        self.url: str = url
-        self.port: int = port
-        self.user: str = user
-        self.password: str = password
-        self.db_name: str = db_name
-
+    def __init__(self, *_, **__):
         self.engine: typing.Optional[Engine] = None
         self.session_maker: typing.Optional[typing.Type] = None
-
         self.models: typing.Dict[str, BaseModel] = {}
 
     def heartbeat(self) -> bool:
@@ -37,22 +27,18 @@ class MySQLManager(BaseManager):
             return False
         return True
 
+    def build_connect_command(self):
+        raise NotImplementedError
+
     def connect(self, *args, **kwargs):
         self.engine = create_engine(
-            (
-                f"mysql+pymysql://"
-                f"{self.user}:{self.password}"
-                f"@"
-                f"{self.url}:{self.port}"
-                f"/"
-                f"{self.db_name}"
-            ),
+            self.build_connect_command(),
             *args,
             **kwargs,
         )
         self.session_maker = scoped_session(sessionmaker(bind=self.engine))
         assert self.heartbeat(), "connect failed"
-        logger.info(f"connected to {self.url}:{self.port}, db: {self.db_name}")
+        logger.info('connected')
 
     def add_model(self, model: BaseModel):
         table_name = model.__tablename__
@@ -75,6 +61,36 @@ class MySQLManager(BaseManager):
             return False
         else:
             return True
+
+
+class SQLiteManager(BaseManager):
+    def __init__(self, path_to_db: str, *args, **kwargs):
+        super(SQLiteManager, self).__init__(*args, **kwargs)
+        assert os.path.isfile(path_to_db), f'db {path_to_db} not existed'
+        self.path: str = path_to_db
+
+    def build_connect_command(self):
+        return f'sqlite:///{self.path}'
+
+
+class MySQLManager(BaseManager):
+    def __init__(self, url: str, port: int, user: str, password: str, db_name: str, *args, **kwargs):
+        super(MySQLManager, self).__init__(*args, **kwargs)
+        self.url: str = url
+        self.port: int = port
+        self.user: str = user
+        self.password: str = password
+        self.db_name: str = db_name
+
+    def build_connect_command(self) -> str:
+        return (
+            f"mysql+pymysql://"
+            f"{self.user}:{self.password}"
+            f"@"
+            f"{self.url}:{self.port}"
+            f"/"
+            f"{self.db_name}"
+        )
 
 
 @contextlib.contextmanager
