@@ -1,6 +1,6 @@
 import typing
 
-from json2db.models.request import JsonRequest
+from json2db.request import JsonRequest
 
 
 def json_invalid_error(

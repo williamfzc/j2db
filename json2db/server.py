@@ -4,7 +4,7 @@ import uvicorn
 from json2db import toolbox
 from json2db import errors
 from json2db import constants
-from json2db.models.request import JsonRequest
+from json2db.request import JsonRequest
 
 app = FastAPI()
 
