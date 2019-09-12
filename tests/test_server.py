@@ -7,7 +7,7 @@ from sqlalchemy import Column, String, Integer
 
 from json2db.server import Server
 from json2db.server import BaseModel
-from json2db.db import MySQLManager, SQLiteManager
+from json2db.db import MySQLManager
 
 URL_PREFIX = r"http://127.0.0.1:9410"
 URL_HELLO = f"{URL_PREFIX}/"
@@ -45,18 +45,15 @@ REQUEST = {
     },
 }
 
-# managers
+# manager
 mysql_manager = MySQLManager(
     url="127.0.0.1", port=33066, user="root", password="root", db_name="some_test"
 )
 
 
-sqlite_manager = SQLiteManager("/Users/fengzhangchi/github_workspace/json2db/test.db")
-
-
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
-    manager = sqlite_manager
+    manager = mysql_manager
     manager.connect()
     manager.add_model(SomeModel)
 
