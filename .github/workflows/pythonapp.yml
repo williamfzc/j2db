@@ -1,4 +1,4 @@
-name: Python application
+name: smoketest
 
 on: [push]
 
