@@ -4,6 +4,7 @@ import time
 import json
 from multiprocessing import Process
 from sqlalchemy import Column, String, Integer
+from loguru import logger
 
 from json2db.server import Server
 from json2db.server import BaseModel
@@ -45,11 +46,6 @@ REQUEST = {
     },
 }
 
-# manager
-mysql_manager = MySQLManager(
-    url="127.0.0.1", port=33066, user="root", password="root", db_name="some_test"
-)
-
 
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
@@ -73,24 +69,32 @@ def test_hello():
 
 
 def test_form_json_content_invalid():
-    resp = requests.post(URL_FORM, data=REQUEST["invalid_content"])
+    request_data = REQUEST["invalid_content"]
+    logger.info(request_data)
+    resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
     assert resp.json()["error"] == "json_invalid"
 
 
 def test_form_json_table_invalid():
-    resp = requests.post(URL_FORM, data=REQUEST["invalid_table"])
+    request_data = REQUEST["invalid_table"]
+    logger.info(request_data)
+    resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
     assert resp.json()["error"] == "table_invalid"
 
 
 def test_form_json_valid():
-    resp = requests.post(URL_FORM, data=REQUEST["both_valid"])
+    request_data = REQUEST["both_valid"]
+    logger.info(request_data)
+    resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
     assert resp.text == '"ok"'
 
 
 def test_params_json_invalid():
-    resp = requests.post(URL_RAW, json=REQUEST["invalid_content"])
+    request_json = REQUEST["invalid_content"]
+    logger.info(request_json)
+    resp = requests.post(URL_RAW, json=request_json)
     assert resp.ok
     assert resp.json()["error"] == "json_invalid"
