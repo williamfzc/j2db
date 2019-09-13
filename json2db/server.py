@@ -20,11 +20,8 @@ class Server(object):
         self.db_manager: typing.Optional[BaseManager] = None
 
     def handler(self, tag: str, action: str, content: str):
-        logger.info(f"event received")
-        logger.debug(f"tag: {tag}")
-        logger.debug(f"content: {content}")
-        logger.debug(f"action: {action}")
-        resp_dict = {"tag": tag, "content": content}
+        resp_dict = {"tag": tag, "action": action, "content": content}
+        logger.info(f"event received: {resp_dict}")
 
         # format check
         logger.debug("format check ...")
@@ -42,8 +39,9 @@ class Server(object):
         content_dict = toolbox.json2dict(content)
         data = model(**content_dict)
         operate_result = self.db_manager.apply_action(action, data)
-        if not operate_result:
-            return errors.DBOperatorError(resp_dict)
+        # some error happened
+        if operate_result:
+            return errors.DBOperatorError(resp_dict, operate_result)
 
         # TODO
         return "ok"

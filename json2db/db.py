@@ -46,7 +46,7 @@ class BaseManager(object):
         del self.models[table_name]
         logger.info(f"model of {table_name} removed")
 
-    def apply_action(self, action_name: str, *args, **kwargs) -> bool:
+    def apply_action(self, action_name: str, *args, **kwargs) -> typing.Optional[str]:
         action_dict: typing.Dict[str, typing.Callable] = {
             "insert": self.insert,
             # NOTIMPLEMENTED
@@ -55,22 +55,24 @@ class BaseManager(object):
             # 'query': self.query,
             # 'remove': self.remove,
         }
-        if action_name not in action_dict:
-            logger.warning(f"action {action_name} not supported")
-            return False
-        return action_dict[action_name](*args, **kwargs)
+        if (not action_name) or (action_name not in action_dict):
+            error_msg = (
+                f"action should be one of these options: {list(action_dict.keys())}"
+            )
+            logger.warning(error_msg)
+            return error_msg
+        return repr(action_dict[action_name](*args, **kwargs))
 
     # TODO maybe these events should be handled by queue?
-    def insert(self, data, *_, **__) -> bool:
+    def insert(self, data, *_, **__) -> typing.Optional[Exception]:
         try:
             with session_scope(self.session_maker) as session:
                 session.add(data)
                 session.commit()
                 session.flush()
-        except:
-            return False
-        else:
-            return True
+        except Exception as e:
+            logger.error(e)
+            return e
 
 
 class SQLiteManager(BaseManager):
