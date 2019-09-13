@@ -1,7 +1,7 @@
 from fastapi import Form, FastAPI
 
 from json2db.models import JsonRequestModel, EventModel
-from json2db.server import EventHandler
+from json2db.handler import EventHandler
 
 
 def register(app: FastAPI, handler: "EventHandler"):
