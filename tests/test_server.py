@@ -49,6 +49,9 @@ REQUEST = {
 
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
+    mysql_manager = MySQLManager(
+        url="127.0.0.1", port=33066, user="root", password="root", db_name="some_test"
+    )
     manager = mysql_manager
     manager.connect()
     manager.add_model(SomeModel)
