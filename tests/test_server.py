@@ -24,22 +24,22 @@ class SomeModel(BaseModel):
 
 REQUEST = {
     "both_invalid": {
-        "tag": "thisisinvalidtag",
+        "table": "thisisinvalidtag",
         "action": "insert",
         "content": "{}abcde",
     },
-    "invalid_tag": {
-        "tag": "thisisinvalidtag",
+    "invalid_table": {
+        "table": "thisisinvalidtag",
         "action": "insert",
         "content": json.dumps({"id": 100, "name": "name1"}),
     },
     "invalid_content": {
-        "tag": "some_table",
+        "table": "some_table",
         "action": "insert",
         "content": "{}cbdsalkj",
     },
     "both_valid": {
-        "tag": "some_table",
+        "table": "some_table",
         "action": "insert",
         "content": json.dumps({"id": 101, "name": "name2"}),
     },
@@ -78,10 +78,10 @@ def test_form_json_content_invalid():
     assert resp.json()["error"] == "json_invalid"
 
 
-def test_form_json_tag_invalid():
-    resp = requests.post(URL_FORM, data=REQUEST["invalid_tag"])
+def test_form_json_table_invalid():
+    resp = requests.post(URL_FORM, data=REQUEST["invalid_table"])
     assert resp.ok
-    assert resp.json()["error"] == "tag_invalid"
+    assert resp.json()["error"] == "table_invalid"
 
 
 def test_form_json_valid():

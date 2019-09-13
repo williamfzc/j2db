@@ -19,8 +19,8 @@ class Server(object):
         self.port: int = port
         self.db_manager: typing.Optional[BaseManager] = None
 
-    def handler(self, tag: str, action: str, content: str):
-        resp_dict = {"tag": tag, "action": action, "content": content}
+    def handler(self, table: str, action: str, content: str):
+        resp_dict = {"table": table, "action": action, "content": content}
         logger.info(f"event received: {resp_dict}")
 
         # format check
@@ -29,11 +29,11 @@ class Server(object):
             logger.warning("json invalid")
             return errors.JsonInvalidError(resp_dict)
 
-        # tag check
-        logger.debug("tag check ...")
-        if tag not in self.db_manager.models:
-            return errors.TagInvalidError(resp_dict)
-        model = self.db_manager.models[tag]
+        # table name check
+        logger.debug("table name check ...")
+        if table not in self.db_manager.models:
+            return errors.TableInvalidError(resp_dict)
+        model = self.db_manager.models[table]
 
         # operation
         content_dict = toolbox.json2dict(content)
