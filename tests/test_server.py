@@ -92,7 +92,7 @@ def test_form_json_valid():
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
-    assert resp.text == '"ok"'
+    assert resp.json() == {"status": "ok"}
 
 
 def test_params_json_invalid():

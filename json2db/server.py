@@ -13,17 +13,18 @@ from json2db.models import EventModel
 app = FastAPI()
 
 
-class Server(object):
-    def __init__(self, port: int = None):
-        if not port:
-            port = constants.PORT
-        self.port: int = port
-        self.db_manager: typing.Optional[BaseManager] = None
+class EventHandler(object):
+    def __init__(self, db_manager: BaseManager):
+        self.db_manager = db_manager
 
-    def handler(self, event: EventModel):
+    def before(self, event: EventModel):
+        """ hook. will execute before handle """
+        return event
+
+    def handle(self, event: EventModel) -> typing.Dict:
         logger.info(f"event received: {event}")
+        event = self.before(event)
 
-        # TODO re implement with hook
         # format check
         logger.debug("format check ...")
         if not event.is_content_valid():
@@ -45,7 +46,21 @@ class Server(object):
             return errors.DBOperatorError(event, operate_result)
 
         # TODO
-        return "ok"
+        return {"status": "ok"}
+
+
+class Server(object):
+    def __init__(
+            self,
+            port: int = None,
+            db_manager: BaseManager = None,
+            handler: EventHandler = None,
+    ):
+        if not port:
+            port = constants.PORT
+        self.port: int = port
+        self.db_manager: BaseManager = db_manager
+        self.handler: EventHandler = handler
 
     def init_db(self, db: BaseManager, create_tables: bool = None):
         self.db_manager = db
@@ -54,7 +69,12 @@ class Server(object):
             BaseModel.metadata.create_all(self.db_manager.engine)
 
     def start(self):
+        # db has not default value
         assert self.db_manager, "init db first"
+        # handler has
+        if not self.handler:
+            self.handler = EventHandler(self.db_manager)
+        # register
         router.register(app, self.handler)
         uvicorn.run(
             app, host="0.0.0.0", port=self.port, log_level=constants.SERVER_LOG_LEVEL

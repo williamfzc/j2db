@@ -1,10 +1,10 @@
 from fastapi import Form, FastAPI
-import typing
 
 from json2db.models import JsonRequestModel, EventModel
+from json2db.server import EventHandler
 
 
-def register(app: FastAPI, handler: typing.Callable):
+def register(app: FastAPI, handler: "EventHandler"):
     @app.get("/")
     def read_root():
         return {"Hello": "World"}
@@ -14,9 +14,9 @@ def register(app: FastAPI, handler: typing.Callable):
         *, table: str = Form(...), action: str = Form(...), content: str = Form(...)
     ):
         new_event = EventModel(table, action, content)
-        return handler(new_event)
+        return handler.handle(new_event)
 
     @app.post("/api/json/raw")
     def json_upload_raw(*, request: JsonRequestModel):
         new_event = EventModel(request.table, request.action, request.content)
-        return handler(new_event)
+        return handler.handle(new_event)
