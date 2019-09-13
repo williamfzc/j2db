@@ -8,6 +8,7 @@ from json2db import errors
 from json2db import constants
 from json2db import router
 from json2db.db import BaseManager, BaseModel
+from json2db.models import EventModel
 
 app = FastAPI()
 
@@ -19,29 +20,29 @@ class Server(object):
         self.port: int = port
         self.db_manager: typing.Optional[BaseManager] = None
 
-    def handler(self, table: str, action: str, content: str):
-        resp_dict = {"table": table, "action": action, "content": content}
-        logger.info(f"event received: {resp_dict}")
+    def handler(self, event: EventModel):
+        logger.info(f"event received: {event}")
 
+        # TODO re implement with hook
         # format check
         logger.debug("format check ...")
-        if not toolbox.is_json_valid(content):
+        if not event.is_content_valid():
             logger.warning("json invalid")
-            return errors.JsonInvalidError(resp_dict)
+            return errors.JsonInvalidError(event)
 
         # table name check
         logger.debug("table name check ...")
-        if table not in self.db_manager.models:
-            return errors.TableInvalidError(resp_dict)
-        model = self.db_manager.models[table]
+        if event.table not in self.db_manager.models:
+            return errors.TableInvalidError(event)
+        model = self.db_manager.models[event.table]
 
         # operation
-        content_dict = toolbox.json2dict(content)
+        content_dict = toolbox.json2dict(event.content)
         data = model(**content_dict)
-        operate_result = self.db_manager.apply_action(action, data)
+        operate_result = self.db_manager.apply_action(event.action, data)
         # some error happened
         if operate_result:
-            return errors.DBOperatorError(resp_dict, operate_result)
+            return errors.DBOperatorError(event, operate_result)
 
         # TODO
         return "ok"

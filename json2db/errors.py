@@ -1,37 +1,31 @@
 import typing
 
-from json2db.request import JsonRequest
+from json2db.models import EventModel
 
 
-def json_invalid_error(
-    origin_request: typing.Union[JsonRequest, typing.Dict[str, str]]
-) -> typing.Dict[str, typing.Union[str, JsonRequest]]:
+def json_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     return {
         "error": "json_invalid",
         "msg": "content in your request is not a valid json format",
-        "request": origin_request,
+        "request": origin_request.to_dict(),
         "stack": "",
     }
 
 
-def table_invalid_error(
-    origin_request: typing.Union[JsonRequest, typing.Dict[str, str]]
-) -> typing.Dict[str, typing.Union[str, JsonRequest]]:
+def table_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     return {
         "error": "table_invalid",
         "msg": "should match the table name",
-        "request": origin_request,
+        "request": origin_request.to_dict(),
         "stack": "",
     }
 
 
-def db_operator_error(
-    origin_request: typing.Union[JsonRequest, typing.Dict[str, str]], error: str
-) -> typing.Dict[str, typing.Union[str, JsonRequest]]:
+def db_operator_error(origin_request: EventModel, error: str) -> typing.Dict[str, str]:
     return {
         "error": "db_operator",
         "msg": "operate failed",
-        "request": origin_request,
+        "request": origin_request.to_dict(),
         "stack": error,
     }
 

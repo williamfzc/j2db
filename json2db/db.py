@@ -61,7 +61,7 @@ class BaseManager(object):
             )
             logger.warning(error_msg)
             return error_msg
-        return action_dict[action_name](*args, **kwargs) or ''
+        return action_dict[action_name](*args, **kwargs) or ""
 
     # TODO maybe these events should be handled by queue?
     def insert(self, data, *_, **__) -> typing.Optional[Exception]:
