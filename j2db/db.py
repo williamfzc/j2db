@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, InternalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 import contextlib
@@ -22,7 +22,7 @@ class BaseManager(object):
             return False
         try:
             self.engine.execute('SELECT "HELLO"')
-        except OperationalError as e:
+        except (OperationalError, InternalError) as e:
             logger.error(e)
             return False
         return True
@@ -87,14 +87,14 @@ class SQLiteManager(BaseManager):
 
 class MySQLManager(BaseManager):
     def __init__(
-        self,
-        url: str,
-        port: int,
-        user: str,
-        password: str,
-        db_name: str,
-        *args,
-        **kwargs,
+            self,
+            url: str,
+            port: int,
+            user: str,
+            password: str,
+            db_name: str,
+            *args,
+            **kwargs,
     ):
         super(MySQLManager, self).__init__(*args, **kwargs)
         self.url: str = url

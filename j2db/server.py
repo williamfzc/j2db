@@ -11,10 +11,10 @@ app = FastAPI()
 
 class Server(object):
     def __init__(
-            self,
-            port: int = None,
-            db_manager: BaseManager = None,
-            handler: EventHandler = None,
+        self,
+        port: int = None,
+        db_manager: BaseManager = None,
+        handler: EventHandler = None,
     ):
         if not port:
             port = constants.PORT

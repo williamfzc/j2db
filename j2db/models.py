@@ -13,15 +13,18 @@ class JsonRequestModel(BaseModel):
     action: str = ""
     # json
     content: str = ""
+    # secret
+    secret: str = ""
 
 
 class EventModel(object):
     """ all the requests should be converted to this type, and sent to handler """
 
-    def __init__(self, table: str, action: str, content: str):
+    def __init__(self, table: str, action: str, content: str, secret: str):
         self.table = table
         self.action = action
         self.content = content
+        self.secret = secret
 
     def to_dict(self):
         return self.__dict__
