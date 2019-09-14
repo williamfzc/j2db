@@ -29,7 +29,7 @@ Why do not we use JSON directly? and actually, some (most of) projects should no
 
 ## usage
 
-see [example](example/example.py)
+see [example](example/server.py)
 
 ## dependencies
 
