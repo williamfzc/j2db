@@ -39,6 +39,7 @@ def get_data(data_type: str):
             "table": "thisisinvalidtag",
             "action": "thisisinvalidaction",
             "content": "{}abcde",
+            "secret": "williamfzc",
         }
 
     new_id = next(counter)
@@ -49,20 +50,23 @@ def get_data(data_type: str):
             "table": "thisisinvalidtag",
             "action": "insert",
             "content": json.dumps({"id": new_id, "name": new_name}),
+            "secret": "williamfzc",
         }
     elif data_type == "invalid_action":
         return {
             "table": TABLE_NAME,
             "action": "invalidaction",
             "content": json.dumps({"id": new_id, "name": new_name}),
+            "secret": "williamfzc",
         }
     elif data_type == "invalid_content":
-        return {"table": TABLE_NAME, "action": "insert", "content": "{}123344adsf"}
+        return {"table": TABLE_NAME, "action": "insert", "content": "{}123344adsf", "secret": "williamfzc", }
     elif data_type == "both_valid":
         return {
             "table": TABLE_NAME,
             "action": "insert",
             "content": json.dumps({"id": new_id, "name": new_name}),
+            "secret": "williamfzc",
         }
 
 
