@@ -30,4 +30,12 @@ class EventModel(object):
         return json.dumps(self.__dict__)
 
     def is_content_valid(self) -> bool:
+        # "123" is valid json
+        # but "abc" is not
+        try:
+            int(self.content)
+        except ValueError:
+            pass
+        else:
+            return False
         return toolbox.is_json_valid(self.content)
