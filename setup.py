@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="json2db",
+    name="j2db",
     version="0.1.0",
     description="standard and safe way to upload your json to db",
     author="williamfzc",
     author_email="fengzc@vip.qq.com",
-    url="https://github.com/williamfzc/json2db",
+    url="https://github.com/williamfzc/j2db",
     packages=find_packages(),
     include_package_data=True,
     license="MIT",

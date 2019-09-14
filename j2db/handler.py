@@ -1,10 +1,10 @@
 import typing
 from loguru import logger
 
-from json2db import errors
-from json2db.db import BaseManager
-from json2db import toolbox
-from json2db.models import EventModel
+from j2db import errors
+from j2db.db import BaseManager
+from j2db import toolbox
+from j2db.models import EventModel
 
 
 class EventHandler(object):

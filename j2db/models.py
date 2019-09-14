@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import json
 
-from json2db import toolbox
+from j2db import toolbox
 
 
 class JsonRequestModel(BaseModel):

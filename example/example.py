@@ -1,5 +1,5 @@
-from json2db.server import Server
-from json2db.db import SQLiteManager, BaseModel
+from j2db.server import Server
+from j2db.db import SQLiteManager, BaseModel
 
 from sqlalchemy import Column, Integer, String
 

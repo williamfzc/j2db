@@ -1,6 +1,6 @@
 import json
 
-from json2db import constants
+from j2db import constants
 
 
 def is_json_valid(content: str) -> bool:

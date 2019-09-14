@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 import uvicorn
 
-from json2db import constants
-from json2db import router
-from json2db.db import BaseManager, BaseModel
-from json2db.handler import EventHandler
+from j2db import constants
+from j2db import router
+from j2db.db import BaseManager, BaseModel
+from j2db.handler import EventHandler
 
 app = FastAPI()
 

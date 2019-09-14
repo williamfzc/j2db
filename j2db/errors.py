@@ -1,6 +1,6 @@
 import typing
 
-from json2db.models import EventModel
+from j2db.models import EventModel
 
 
 def json_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:

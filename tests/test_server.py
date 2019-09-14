@@ -2,18 +2,28 @@ import requests
 import pytest
 import time
 import json
+import itertools
 from multiprocessing import Process
 from sqlalchemy import Column, String, Integer
 from loguru import logger
 
-from json2db.server import Server
-from json2db.server import BaseModel
-from json2db.db import MySQLManager
+from j2db.server import Server
+from j2db.server import BaseModel
+from j2db.db import MySQLManager
 
 URL_PREFIX = r"http://127.0.0.1:9410"
 URL_HELLO = f"{URL_PREFIX}/"
 URL_RAW = f"{URL_PREFIX}/api/json/raw"
 URL_FORM = f"{URL_PREFIX}/api/json/form"
+
+DB_USER = "root"
+DB_PWD = "root"
+DB_URL = "127.0.0.1"
+DB_PORT = 33066
+DB_NAME = 'some_db'
+TABLE_NAME = "some_table"
+
+counter = itertools.count()
 
 
 class SomeModel(BaseModel):
@@ -23,34 +33,56 @@ class SomeModel(BaseModel):
     name = Column(String(64), unique=True)
 
 
-REQUEST = {
-    "both_invalid": {
-        "table": "thisisinvalidtag",
-        "action": "insert",
-        "content": "{}abcde",
-    },
-    "invalid_table": {
-        "table": "thisisinvalidtag",
-        "action": "insert",
-        "content": json.dumps({"id": 100, "name": "name1"}),
-    },
-    "invalid_content": {
-        "table": "some_table",
-        "action": "insert",
-        "content": "{}cbdsalkj",
-    },
-    "both_valid": {
-        "table": "some_table",
-        "action": "insert",
-        "content": json.dumps({"id": 101, "name": "name2"}),
-    },
-}
+def get_data(data_type: str):
+    if data_type == 'both_invalid':
+        return {
+            "table": "thisisinvalidtag",
+            "action": "thisisinvalidaction",
+            "content": "{}abcde",
+        }
+
+    new_id = next(counter)
+    new_name = f'name_{new_id}'
+
+    if data_type == 'invalid_table':
+        return {
+            "table": "thisisinvalidtag",
+            "action": "insert",
+            "content": json.dumps({
+                "id": new_id,
+                "name": new_name,
+            }),
+        }
+    elif data_type == 'invalid_action':
+        return {
+            "table": TABLE_NAME,
+            "action": "invalidaction",
+            "content": json.dumps({
+                "id": new_id,
+                "name": new_name,
+            }),
+        }
+    elif data_type == 'invalid_content':
+        return {
+            "table": TABLE_NAME,
+            "action": "insert",
+            "content": "{}123344adsf",
+        }
+    elif data_type == 'both_valid':
+        return {
+            "table": TABLE_NAME,
+            "action": "insert",
+            "content": json.dumps({
+                "id": new_id,
+                "name": new_name,
+            }),
+        }
 
 
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
     mysql_manager = MySQLManager(
-        url="127.0.0.1", port=33066, user="root", password="root", db_name="some_test"
+        url=DB_URL, port=DB_PORT, user=DB_USER, password=DB_PWD, db_name=DB_NAME,
     )
     manager = mysql_manager
     manager.connect()
@@ -72,7 +104,7 @@ def test_hello():
 
 
 def test_form_json_content_invalid():
-    request_data = REQUEST["invalid_content"]
+    request_data = get_data("invalid_content")
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
@@ -80,7 +112,7 @@ def test_form_json_content_invalid():
 
 
 def test_form_json_table_invalid():
-    request_data = REQUEST["invalid_table"]
+    request_data = get_data("invalid_table")
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
@@ -88,7 +120,7 @@ def test_form_json_table_invalid():
 
 
 def test_form_json_valid():
-    request_data = REQUEST["both_valid"]
+    request_data = get_data("both_valid")
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
@@ -96,7 +128,7 @@ def test_form_json_valid():
 
 
 def test_params_json_invalid():
-    request_json = REQUEST["invalid_content"]
+    request_json = get_data("invalid_content")
     logger.info(request_json)
     resp = requests.post(URL_RAW, json=request_json)
     assert resp.ok
@@ -104,15 +136,8 @@ def test_params_json_invalid():
 
 
 def test_pressure():
-    valid_list = [
-        {
-            "table": "some_table",
-            "action": "insert",
-            "content": json.dumps({"id": each_id, "name": f"name{each_id}"}),
-        }
-        for each_id in range(1000, 9999)
-    ]
-    for each in valid_list:
+    request_list = (get_data('both_valid') for _ in range(5000))
+    for each in request_list:
         resp = requests.post(URL_RAW, json=each)
         assert resp.ok
         assert resp.json()["status"] == "ok"
