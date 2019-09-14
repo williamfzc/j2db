@@ -20,7 +20,7 @@ DB_USER = "root"
 DB_PWD = "root"
 DB_URL = "127.0.0.1"
 DB_PORT = 33066
-DB_NAME = 'some_db'
+DB_NAME = "some_db"
 TABLE_NAME = "some_table"
 
 counter = itertools.count()
@@ -34,7 +34,7 @@ class SomeModel(BaseModel):
 
 
 def get_data(data_type: str):
-    if data_type == 'both_invalid':
+    if data_type == "both_invalid":
         return {
             "table": "thisisinvalidtag",
             "action": "thisisinvalidaction",
@@ -42,47 +42,34 @@ def get_data(data_type: str):
         }
 
     new_id = next(counter)
-    new_name = f'name_{new_id}'
+    new_name = f"name_{new_id}"
 
-    if data_type == 'invalid_table':
+    if data_type == "invalid_table":
         return {
             "table": "thisisinvalidtag",
             "action": "insert",
-            "content": json.dumps({
-                "id": new_id,
-                "name": new_name,
-            }),
+            "content": json.dumps({"id": new_id, "name": new_name}),
         }
-    elif data_type == 'invalid_action':
+    elif data_type == "invalid_action":
         return {
             "table": TABLE_NAME,
             "action": "invalidaction",
-            "content": json.dumps({
-                "id": new_id,
-                "name": new_name,
-            }),
+            "content": json.dumps({"id": new_id, "name": new_name}),
         }
-    elif data_type == 'invalid_content':
+    elif data_type == "invalid_content":
+        return {"table": TABLE_NAME, "action": "insert", "content": "{}123344adsf"}
+    elif data_type == "both_valid":
         return {
             "table": TABLE_NAME,
             "action": "insert",
-            "content": "{}123344adsf",
-        }
-    elif data_type == 'both_valid':
-        return {
-            "table": TABLE_NAME,
-            "action": "insert",
-            "content": json.dumps({
-                "id": new_id,
-                "name": new_name,
-            }),
+            "content": json.dumps({"id": new_id, "name": new_name}),
         }
 
 
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
     mysql_manager = MySQLManager(
-        url=DB_URL, port=DB_PORT, user=DB_USER, password=DB_PWD, db_name=DB_NAME,
+        url=DB_URL, port=DB_PORT, user=DB_USER, password=DB_PWD, db_name=DB_NAME
     )
     manager = mysql_manager
     manager.connect()
@@ -136,7 +123,7 @@ def test_params_json_invalid():
 
 
 def test_pressure():
-    request_list = (get_data('both_valid') for _ in range(5000))
+    request_list = (get_data("both_valid") for _ in range(5000))
     for each in request_list:
         resp = requests.post(URL_RAW, json=each)
         assert resp.ok

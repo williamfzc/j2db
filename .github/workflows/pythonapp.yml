@@ -12,7 +12,7 @@ jobs:
       - uses: mirromutth/mysql-action@v1.1
         with:
           host port: 33066
-          mysql database: 'some_test'
+          mysql database: 'some_db'
           mysql root password: 'root'
           mysql user: 'user'
           mysql password: 'pwd'
