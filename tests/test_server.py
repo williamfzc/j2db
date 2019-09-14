@@ -101,3 +101,18 @@ def test_params_json_invalid():
     resp = requests.post(URL_RAW, json=request_json)
     assert resp.ok
     assert resp.json()["error"] == "json_invalid"
+
+
+def test_pressure():
+    valid_list = [
+        {
+            "table": "some_table",
+            "action": "insert",
+            "content": json.dumps({"id": each_id, "name": f"name{each_id}"}),
+        }
+        for each_id in range(1000, 9999)
+    ]
+    for each in valid_list:
+        resp = requests.post(URL_RAW, json=each)
+        assert resp.ok
+        assert resp.json()["status"] == "ok"
