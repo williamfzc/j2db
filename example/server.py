@@ -5,7 +5,9 @@ from j2db.db import MySQLManager, BaseModel
 from sqlalchemy import Column, Integer, String
 
 # configure your auth for safety
-auth.AUTH_DICT["user_name"] = "YOUR_SECRET"
+auth.AUTH_DICT = {
+    "user_name": "YOUR_SECRET",
+}
 
 
 # register a model (table)
