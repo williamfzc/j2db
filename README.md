@@ -36,6 +36,13 @@ the point is:
 - stable
 - customizable
 
+## support more actions? (query / delete / update)
+
+Have no plan now. 
+
+- `query` should be better implemented by others, exposed via HTTP API or something else
+- `update` and `delete` will modify the origin data. ** BUT, LOG (OR SOMETHING LIKE THAT) SHOULD BE IMMUTABLE. **
+
 ## how
 
 - server for receiving http request, and get JSON
