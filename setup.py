@@ -18,7 +18,7 @@ setup(
     install_requires=[
         "fastapi",
         "uvicorn",
-        "pydantic",
+        "pydantic==0.32.2",
         "python-multipart",
         "loguru",
         "sqlalchemy",
