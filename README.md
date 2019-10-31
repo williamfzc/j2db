@@ -1,5 +1,6 @@
 # j2db (JSON to Database)
 
+[![PyPI version](https://badge.fury.io/py/j2db.svg)](https://badge.fury.io/py/j2db)
 ![CI Status](https://github.com/williamfzc/j2db/workflows/smoketest/badge.svg)  
 
 standard and safe way to upload your json to db
@@ -41,7 +42,7 @@ the point is:
 Have no plan now. 
 
 - `query` should be better implemented by others, exposed via HTTP API or something else
-- `update` and `delete` will modify the origin data. ** BUT, LOG (OR SOMETHING LIKE THAT) SHOULD BE IMMUTABLE. **
+- `update` and `delete` will modify the origin data. **BUT, LOG (OR SOMETHING LIKE THAT) SHOULD BE IMMUTABLE.**
 
 ## how
 
