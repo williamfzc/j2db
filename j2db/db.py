@@ -87,14 +87,14 @@ class SQLiteManager(BaseManager):
 
 class MySQLManager(BaseManager):
     def __init__(
-            self,
-            url: str,
-            port: int,
-            user: str,
-            password: str,
-            db_name: str,
-            *args,
-            **kwargs,
+        self,
+        url: str,
+        port: int,
+        user: str,
+        password: str,
+        db_name: str,
+        *args,
+        **kwargs,
     ):
         super(MySQLManager, self).__init__(*args, **kwargs)
         self.url: str = url

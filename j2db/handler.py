@@ -8,10 +8,32 @@ from j2db.models import EventModel
 from j2db.auth import AUTH_DICT
 
 
-class EventHandler(object):
+class BaseHandler(object):
     def __init__(self, db_manager: BaseManager):
         self.db_manager = db_manager
 
+    def handle(self, *_, **__):
+        raise NotImplementedError
+
+
+class InfoHandler(BaseHandler):
+    # all the flags should be placed here
+    FLAG_TABLE: str = "table"
+
+    def handle(self, info_flag: str) -> typing.Union[list, dict]:
+        info_flag_dict = {self.FLAG_TABLE: self._handle_table}
+
+        # check
+        if info_flag not in info_flag_dict:
+            return errors.InfoFlagNotFoundError(f"{info_flag} is not in {info_flag_dict.keys()}")
+
+        return info_flag_dict[info_flag]()
+
+    def _handle_table(self) -> typing.List[str]:
+        return list(self.db_manager.models.keys())
+
+
+class EventHandler(BaseHandler):
     def before(self, event: EventModel) -> EventModel:
         """ hook. will execute before handle """
         return event
@@ -19,7 +41,7 @@ class EventHandler(object):
     def auth(self, event: EventModel) -> bool:
         for k, v in AUTH_DICT.items():
             if v == event.secret:
-                logger.info(f'auth passed with key [{k}]')
+                logger.info(f"auth passed with key [{k}]")
                 return True
         return False
 

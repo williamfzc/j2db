@@ -31,7 +31,7 @@ class Server(object):
     def start(self):
         # db has not default value
         assert self.db_manager, "init db first"
-        # handler has
+        # if custom handler existed
         if not self.handler:
             self.handler = EventHandler(self.db_manager)
         # register

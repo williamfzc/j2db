@@ -60,7 +60,12 @@ def get_data(data_type: str):
             "secret": "williamfzc",
         }
     elif data_type == "invalid_content":
-        return {"table": TABLE_NAME, "action": "insert", "content": "{}123344adsf", "secret": "williamfzc", }
+        return {
+            "table": TABLE_NAME,
+            "action": "insert",
+            "content": "{}123344adsf",
+            "secret": "williamfzc",
+        }
     elif data_type == "both_valid":
         return {
             "table": TABLE_NAME,

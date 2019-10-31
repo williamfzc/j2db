@@ -43,3 +43,16 @@ AuthInvalidError = auth_invalid_error
 JsonInvalidError = json_invalid_error
 TableInvalidError = table_invalid_error
 DBOperatorError = db_operator_error
+
+
+# info
+def info_flag_not_found_error(error: str) -> typing.Dict[str, str]:
+    return {
+        "error": "info_flag_not_found_error",
+        "msg": "info flag invalid",
+        "request": "",
+        "stack": error,
+    }
+
+
+InfoFlagNotFoundError = info_flag_not_found_error
