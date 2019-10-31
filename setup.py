@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="j2db",
-    version="0.1.0",
+    version="0.2.0",
     description="standard and safe way to upload your json to db",
     author="williamfzc",
     author_email="fengzc@vip.qq.com",
