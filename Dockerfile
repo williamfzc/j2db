@@ -6,4 +6,6 @@ COPY . .
 
 RUN pip install --no-cache-dir .
 
+EXPOSE 9410
+
 CMD [ "bash" ]
