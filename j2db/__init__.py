@@ -22,7 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-__author__ = r"williamfzc"
-__author_email__ = r"fengzc@vip.qq.com"
-__license__ = r"MIT"
-__url__ = r"https://github.com/williamfzc/json2db"
+__PROJECT_NAME__ = r"j2db"
+__AUTHOR__ = r"williamfzc"
+__AUTHOR_EMAIL__ = r"fengzc@vip.qq.com"
+__LICENSE__ = r"MIT"
+__URL__ = r"https://github.com/williamfzc/j2db"
+__VERSION__ = r"0.2.0"
+__DESCRIPTION__ = r"standard and safe way to upload your json to db"

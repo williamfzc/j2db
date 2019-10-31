@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 import uvicorn
+from loguru import logger
 
 from j2db import constants
 from j2db import router
+from j2db import __PROJECT_NAME__, __VERSION__
 from j2db.db import BaseManager, BaseModel
 from j2db.handler import EventHandler
 
@@ -29,6 +31,8 @@ class Server(object):
             BaseModel.metadata.create_all(self.db_manager.engine)
 
     def start(self):
+        logger.info(f"using: {__PROJECT_NAME__} ver {__VERSION__}")
+
         # db has not default value
         assert self.db_manager, "init db first"
         # if custom handler existed
