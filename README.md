@@ -24,7 +24,7 @@ Why do not we use JSON directly? and actually, some (most of) projects should no
 
 ## what's the difference with others
 
-> **In production environment, you should consider ELK firstly. ** 
+> **In production environment, you should consider ELK firstly.** 
 >
 > ELK is nearly the best way to handle logging issues. It's standard and stable.
 
@@ -60,9 +60,15 @@ see [example](example/server.py)
 - [fastapi](https://github.com/tiangolo/fastapi): as web server
 - [sqlalchemy](https://github.com/sqlalchemy/sqlalchemy): as db manager 
 
-## bug report & suggestion
+## dev plan
 
-please let me know via issue
+see [project kanban](https://github.com/williamfzc/j2db/projects/1)
+
+## bug report & suggestion & contribution
+
+via [issue board](https://github.com/williamfzc/j2db/issues)
+
+welcome to join this project :)
 
 ## license
 
