@@ -10,6 +10,7 @@ from loguru import logger
 from j2db.server import Server
 from j2db.server import BaseModel
 from j2db.db import MySQLManager
+from j2db.auth import AuthManager, AuthUser
 
 URL_PREFIX = r"http://127.0.0.1:9410"
 URL_HELLO = f"{URL_PREFIX}/"
@@ -22,6 +23,13 @@ DB_URL = "127.0.0.1"
 DB_PORT = 33066
 DB_NAME = "some_db"
 TABLE_NAME = "some_table"
+test_user = AuthUser(
+    name="williamfzc",
+    secret="pwd",
+    allow_table=[TABLE_NAME],
+)
+secret_str = f"{test_user.name}:{test_user.secret}"
+AuthManager.add(test_user)
 
 counter = itertools.count()
 
@@ -39,7 +47,7 @@ def get_data(data_type: str):
             "table": "thisisinvalidtag",
             "action": "thisisinvalidaction",
             "content": "{}abcde",
-            "secret": "williamfzc",
+            "secret": secret_str,
         }
 
     new_id = next(counter)
@@ -50,28 +58,28 @@ def get_data(data_type: str):
             "table": "thisisinvalidtag",
             "action": "insert",
             "content": json.dumps({"id": new_id, "name": new_name}),
-            "secret": "williamfzc",
+            "secret": secret_str,
         }
     elif data_type == "invalid_action":
         return {
             "table": TABLE_NAME,
             "action": "invalidaction",
             "content": json.dumps({"id": new_id, "name": new_name}),
-            "secret": "williamfzc",
+            "secret": secret_str,
         }
     elif data_type == "invalid_content":
         return {
             "table": TABLE_NAME,
             "action": "insert",
             "content": "{}123344adsf",
-            "secret": "williamfzc",
+            "secret": secret_str,
         }
     elif data_type == "both_valid":
         return {
             "table": TABLE_NAME,
             "action": "insert",
             "content": json.dumps({"id": new_id, "name": new_name}),
-            "secret": "williamfzc",
+            "secret": secret_str,
         }
 
 

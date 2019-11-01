@@ -1,13 +1,16 @@
-from j2db import auth
 from j2db.server import Server
 from j2db.db import MySQLManager, BaseModel
+from j2db.auth import AuthManager, AuthUser
 
 from sqlalchemy import Column, Integer, String
 
 # configure your auth for safety
-auth.AUTH_DICT = {
-    "user_name": "YOUR_SECRET",
-}
+test_user = AuthUser(
+    name="username",
+    secret="pwd",
+    allow_table=["some_table"],
+)
+AuthManager.add(test_user)
 
 
 # register a model (table)
