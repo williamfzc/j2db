@@ -5,7 +5,7 @@ from j2db import errors
 from j2db.db import BaseManager
 from j2db import toolbox
 from j2db.models import EventModel
-from j2db.auth import AUTH_DICT
+from j2db.auth import AuthManager
 
 
 class BaseHandler(object):
@@ -39,11 +39,20 @@ class EventHandler(BaseHandler):
         return event
 
     def auth(self, event: EventModel) -> bool:
-        for k, v in AUTH_DICT.items():
-            if v == event.secret:
-                logger.info(f"auth passed with key [{k}]")
-                return True
-        return False
+        # secret eg: YOURNAME:YOURPWD
+        secret_str: str = event.secret
+        target_table: str = event.table
+
+        if ":" not in secret_str:
+            logger.warning("no `:` found in secret, eg: YOURNAME:YOURPWD")
+            return False
+        user, secret, *_ = secret_str.split(":")
+
+        # auth check
+        if not AuthManager.is_allowed(user, secret, target_table):
+            logger.warning(f"user {user} is not allowed to access table {target_table}")
+            return False
+        return True
 
     def handle(self, event: EventModel) -> typing.Dict:
         logger.info(f"event received: {event}")
