@@ -120,7 +120,9 @@ def test_form_json_table_invalid():
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
-    assert resp.json()["error"] == "table_invalid"
+    # validate flow: auth -> table -> content
+    # so, invalid table -> invalid auth
+    assert resp.json()["error"] == "auth_invalid"
 
 
 def test_form_json_valid():
@@ -140,6 +142,7 @@ def test_params_json_invalid():
 
 
 def test_pressure():
+    # TODO threading or async
     request_list = (get_data("both_valid") for _ in range(5000))
     for each in request_list:
         resp = requests.post(URL_RAW, json=each)
