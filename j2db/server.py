@@ -30,13 +30,19 @@ class Server(object):
         if create_tables:
             BaseModel.metadata.create_all(self.db_manager.engine)
 
+    def init_handler(self, handler: EventHandler):
+        self.handler = handler
+
     def start(self):
         logger.info(f"using: {__PROJECT_NAME__} ver {__VERSION__}")
 
         # db has not default value
         assert self.db_manager, "init db first"
-        # if custom handler existed
-        if not self.handler:
+        # use default handler if no custom handler existed
+        if self.handler:
+            logger.info("use custom handler")
+        else:
+            logger.info("no custom handler, use the default one")
             self.handler = EventHandler(self.db_manager)
         # register
         router.register(app, self.handler)
