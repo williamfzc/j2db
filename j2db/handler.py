@@ -82,5 +82,4 @@ class EventHandler(BaseHandler):
         if operate_result:
             return errors.DBOperatorError(event, operate_result)
 
-        # TODO
-        return {"status": "ok"}
+        return errors.NullError(event)
