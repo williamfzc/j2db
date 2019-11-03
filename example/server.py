@@ -1,5 +1,5 @@
 from j2db.server import Server
-from j2db.db import MySQLManager, BaseModel
+from j2db.db import MySQLManager, SQLiteManager, BaseModel
 from j2db.auth import AuthManager, AuthUser
 
 from sqlalchemy import Column, Integer, String
@@ -22,10 +22,15 @@ class SomeModel(BaseModel):
 
 
 # bind to db
-# for test, you can use SQLite instead
 manager = MySQLManager(
     url="127.0.0.1", port=33066, user="root", password="root", db_name="some_db"
 )
+# for test, you can use SQLite instead
+# from j2db.db import SQLiteManager
+# manager = SQLiteManager(
+#     path_to_db="./PATH/TO/YOUR/DB"
+# )
+
 manager.connect()
 manager.add_model(SomeModel)
 

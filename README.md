@@ -56,7 +56,7 @@ Have no plan now. And, that is why this repo called `j2db`, not `db2j`.
 
 ## usage
 
-see [example](example/server.py)
+see [example](example)
 
 ## dependencies
 

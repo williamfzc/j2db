@@ -9,19 +9,36 @@
 
 > you can try it in different languages.
 
-## use it in production
+## customization
 
-built-in auth function is quite simple (not safe enough). if you want to use it as production, you 'd better re-implement function `auth` in handler.
-
-```python
-class SafeHandler(EventHandler):
-    def auth(self, event: EventModel) -> bool:
-        # custom auth ...
-        return event.secret == 'SOME SECRET'
-```
-
-and change the default auth function:
+in production environment, customization is necessary and important for extending functions. And it should be simple enough:
 
 ```python
-s = Server(handler=SafeHandler(manager))
+from j2db.handler import EventHandler
+from j2db.models import EventModel
+
+class NewEventHandler(EventHandler):
+    def before_auth(self, e: EventModel) -> EventModel:
+        # finish your customization
+        e.content += "abcde"
+        # and return it
+        return e
+    
+    # there are many kinds of hooks for different usages, which start with `before` or `after`.
+    # you can find them in EventHandlerHookMixin
 ```
+
+and bind (overwrite) this handler to server:
+
+```python
+manager.connect()
+manager.add_model(SomeModel)
+new_handler = NewEventHandler(manager)
+
+s = Server()
+s.init_db(manager, create_tables=True)
+s.init_handler(new_handler)
+s.start()
+```
+
+they should work as expect.
