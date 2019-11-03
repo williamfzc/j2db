@@ -130,7 +130,7 @@ def test_form_json_valid():
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
     assert resp.ok
-    assert resp.json() == {"status": "ok"}
+    assert resp.json()["error"] == ""
 
 
 def test_params_json_invalid():
@@ -147,4 +147,4 @@ def test_pressure():
     for each in request_list:
         resp = requests.post(URL_RAW, json=each)
         assert resp.ok
-        assert resp.json()["status"] == "ok"
+        assert resp.json()["error"] == ""
