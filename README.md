@@ -11,8 +11,12 @@ standard and safe way to upload your json to db
 
 - http request with json data (from wherever you like)
 - verify (format and content)
-- ADD WHATEVER YOU WANT HERE (e.g. extra verification)
+- customize your own flow (full support of hook!)
 - upload to db
+
+based on it, developers can easily build their own lightweight cross-platform center for data collection.
+
+![](./docs/pics/deployment.svg)
 
 ## why
 
@@ -25,7 +29,6 @@ Why do not we use JSON directly? and actually, some (most of) projects should no
 ## what's the difference with others
 
 > **In production environment, you should consider ELK firstly.** 
->
 > ELK is nearly the best way to handle logging issues. It's standard and stable.
 
 j2db offers a flexible and lightweight (ELK is good but huge) way to developers, which makes them upload the specific contents you care (e.g. CI status) to database, in different platforms or languages, more conveniently.
@@ -39,7 +42,7 @@ the point is:
 
 ## support more actions? (query / delete / update)
 
-Have no plan now. 
+Have no plan now. And, that is why this repo called `j2db`, not `db2j`.
 
 - `query` should be better implemented by others, exposed via HTTP API or something else
 - `update` and `delete` will modify the origin data. **BUT, LOG (OR SOMETHING LIKE THAT) SHOULD BE IMMUTABLE.**
