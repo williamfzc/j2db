@@ -11,6 +11,8 @@ from j2db.server import Server
 from j2db.server import BaseModel
 from j2db.db import MySQLManager
 from j2db.auth import AuthManager, AuthUser
+from j2db.handler import EventHandler
+from j2db.models import EventModel
 
 URL_PREFIX = r"http://127.0.0.1:9410"
 URL_HELLO = f"{URL_PREFIX}/"
@@ -39,6 +41,12 @@ class SomeModel(BaseModel):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(64), unique=True)
+
+
+class NewHandler(EventHandler):
+    def before_auth(self, event: EventModel) -> EventModel:
+        print("hey i am edited")
+        return event
 
 
 def get_data(data_type: str):
@@ -91,9 +99,11 @@ def my_fixture():
     manager = mysql_manager
     manager.connect()
     manager.add_model(SomeModel)
+    new_handler = NewHandler(manager)
 
     s = Server()
     s.init_db(manager, create_tables=True)
+    s.init_handler(new_handler)
     p = Process(target=s.start)
     p.start()
     time.sleep(3)
