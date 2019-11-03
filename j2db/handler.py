@@ -33,11 +33,19 @@ class InfoHandler(BaseHandler):
         return list(self.db_manager.models.keys())
 
 
-class EventHandler(BaseHandler):
-    def before(self, event: EventModel) -> EventModel:
-        """ hook. will execute before handle """
-        return event
+class EventHandlerHookMixin(object):
+    default_hook: typing.Callable[["EventHandler", EventModel], EventModel] = lambda h, e: e
+    before_auth = default_hook
+    after_auth = default_hook
+    before_format_check = default_hook
+    after_format_check = default_hook
+    before_table_check = default_hook
+    after_table_check = default_hook
+    before_operation = default_hook
+    after_operation = default_hook
 
+
+class EventHandler(BaseHandler, EventHandlerHookMixin):
     def auth(self, event: EventModel) -> bool:
         # secret eg: YOURNAME:YOURPWD
         secret_str: str = event.secret
@@ -56,30 +64,36 @@ class EventHandler(BaseHandler):
 
     def handle(self, event: EventModel) -> typing.Dict:
         logger.info(f"event received: {event}")
-        event = self.before(event)
-
         # auth
+        event = self.before_auth(event)
         if not self.auth(event):
             return errors.AuthInvalidError(event)
+        event = self.after_auth(event)
 
         # format check
+        event = self.before_format_check(event)
         logger.debug("format check ...")
         if not event.is_content_valid():
             logger.warning("json invalid")
             return errors.JsonInvalidError(event)
+        event = self.after_format_check(event)
 
         # table name check
+        event = self.before_table_check(event)
         logger.debug("table name check ...")
         if event.table not in self.db_manager.models:
             return errors.TableInvalidError(event)
         model = self.db_manager.models[event.table]
+        event = self.after_table_check(event)
 
         # operation
+        event = self.before_operation(event)
         content_dict = toolbox.json2dict(event.content)
         data = model(**content_dict)
         operate_result = self.db_manager.apply_action(event.action, data)
         # some error happened
         if operate_result:
             return errors.DBOperatorError(event, operate_result)
+        event = self.after_operation(event)
 
         return errors.NullError(event)
