@@ -1,5 +1,13 @@
 # example
 
+## install
+
+python >= 3.6
+
+```bash
+pip install j2db
+```
+
 ## usage
 
 - start server.py (maybe you need to change some settings)
