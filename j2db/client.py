@@ -40,4 +40,9 @@ class J2DBClient(object):
             "content": content,
             "secret": secret,
         }
-        return requests.post(self.upload_url, data=request_data)
+        resp = requests.post(self.upload_url, data=request_data)
+        if not resp.ok:
+            logger.warning("response status seems not good")
+        if resp.json()["error"] != "":
+            logger.warning("error happened in response")
+        return resp
