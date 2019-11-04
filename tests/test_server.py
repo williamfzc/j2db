@@ -15,7 +15,9 @@ from j2db.handler import EventHandler
 from j2db.models import EventModel
 from j2db.client import J2DBClient
 
-URL_PREFIX = r"http://127.0.0.1:9410"
+J2DB_SERVER_ADDRESS = "127.0.0.1"
+J2DB_SERVER_PORT = 9410
+URL_PREFIX = f"http://{J2DB_SERVER_ADDRESS}:{J2DB_SERVER_PORT}"
 URL_HELLO = f"{URL_PREFIX}/"
 URL_RAW = f"{URL_PREFIX}/api/json/raw"
 URL_FORM = f"{URL_PREFIX}/api/json/form"
@@ -145,7 +147,7 @@ def test_form_json_valid():
 
 
 def test_form_json_valid_with_client():
-    cli = J2DBClient(DB_IP_ADDRESS, DB_PORT)
+    cli = J2DBClient(J2DB_SERVER_ADDRESS, J2DB_SERVER_PORT)
     resp = cli.send(get_data("both_valid"))
     assert resp.ok
     assert resp.json()["error"] == ""
