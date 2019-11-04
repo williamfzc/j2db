@@ -13,6 +13,7 @@ from j2db.db import MySQLManager
 from j2db.auth import AuthManager, AuthUser
 from j2db.handler import EventHandler
 from j2db.models import EventModel
+from j2db.client import J2DBClient
 
 URL_PREFIX = r"http://127.0.0.1:9410"
 URL_HELLO = f"{URL_PREFIX}/"
@@ -21,7 +22,7 @@ URL_FORM = f"{URL_PREFIX}/api/json/form"
 
 DB_USER = "root"
 DB_PWD = "root"
-DB_URL = "127.0.0.1"
+DB_IP_ADDRESS = "127.0.0.1"
 DB_PORT = 33066
 DB_NAME = "some_db"
 TABLE_NAME = "some_table"
@@ -94,7 +95,7 @@ def get_data(data_type: str):
 @pytest.fixture(scope="module", autouse=True)
 def my_fixture():
     mysql_manager = MySQLManager(
-        url=DB_URL, port=DB_PORT, user=DB_USER, password=DB_PWD, db_name=DB_NAME
+        url=DB_IP_ADDRESS, port=DB_PORT, user=DB_USER, password=DB_PWD, db_name=DB_NAME
     )
     manager = mysql_manager
     manager.connect()
@@ -139,6 +140,13 @@ def test_form_json_valid():
     request_data = get_data("both_valid")
     logger.info(request_data)
     resp = requests.post(URL_FORM, data=request_data)
+    assert resp.ok
+    assert resp.json()["error"] == ""
+
+
+def test_form_json_valid_with_client():
+    cli = J2DBClient(DB_IP_ADDRESS, DB_PORT)
+    resp = cli.send(get_data("both_valid"))
     assert resp.ok
     assert resp.json()["error"] == ""
 
