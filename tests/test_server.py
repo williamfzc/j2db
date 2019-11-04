@@ -28,9 +28,12 @@ DB_IP_ADDRESS = "127.0.0.1"
 DB_PORT = 33066
 DB_NAME = "some_db"
 TABLE_NAME = "some_table"
+AUTH_USER_NAME = "williamfzc"
+AUTH_PWD = "pwd"
+AUTH_STR = f"{AUTH_USER_NAME}:{AUTH_PWD}"
 test_user = AuthUser(
-    name="williamfzc",
-    secret="pwd",
+    name=AUTH_USER_NAME,
+    secret=AUTH_PWD,
     allow_table=[TABLE_NAME],
 )
 secret_str = f"{test_user.name}:{test_user.secret}"
@@ -147,7 +150,12 @@ def test_form_json_valid():
 
 
 def test_form_json_valid_with_client():
-    cli = J2DBClient(J2DB_SERVER_ADDRESS, J2DB_SERVER_PORT)
+    cli = J2DBClient(
+        J2DB_SERVER_ADDRESS,
+        J2DB_SERVER_PORT,
+        TABLE_NAME,
+        AUTH_STR,
+    )
     resp = cli.send(get_data("both_valid"))
     assert resp.ok
     assert resp.json()["error"] == ""
