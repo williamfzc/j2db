@@ -156,7 +156,8 @@ def test_form_json_valid_with_client():
         TABLE_NAME,
         AUTH_STR,
     )
-    resp = cli.send(get_data("both_valid"))
+    data = get_data("both_valid")["content"]
+    resp = cli.send(data)
     assert resp.ok
     assert resp.json()["error"] == ""
 

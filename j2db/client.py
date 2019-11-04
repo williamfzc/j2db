@@ -2,6 +2,7 @@ import requests
 from requests.models import Response
 from loguru import logger
 import json
+import typing
 
 
 class J2DBClient(object):
@@ -23,13 +24,14 @@ class J2DBClient(object):
     def heartbeat(self) -> bool:
         return requests.get(self.root_url).ok
 
-    def send(self, content: dict, table: str = None, secret: str = None) -> Response:
+    def send(self, content: typing.Union[str, dict], table: str = None, secret: str = None) -> Response:
         table = table or self.table
         secret = secret or self.secret
         assert table, "no table configured"
         assert secret, "no secret configured"
 
-        content = json.dumps(content)
+        if isinstance(content, dict):
+            content = json.dumps(content)
         logger.info(f"request with data: {content}")
 
         request_data = {
