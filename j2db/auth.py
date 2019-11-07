@@ -53,4 +53,5 @@ class AuthManager(object):
             return False
 
         # allow
+        logger.debug(f"user {name} can access: {user.allow_table}")
         return table in user.allow_table
