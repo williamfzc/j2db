@@ -88,12 +88,16 @@ class EventHandler(BaseHandler, EventHandlerHookMixin):
 
         # operation
         event = self.before_operation(event)
+        logger.debug("db operation ...")
         content_dict = toolbox.json2dict(event.content)
         data = model(**content_dict)
         operate_result = self.db_manager.apply_action(event.action, data)
+
         # some error happened
         if operate_result:
+            logger.error(operate_result)
             return errors.DBOperatorError(event, operate_result)
         event = self.after_operation(event)
+        logger.info(f"handler end: {event}")
 
         return errors.NullError(event)
