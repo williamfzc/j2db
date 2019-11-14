@@ -6,7 +6,9 @@ import typing
 
 
 class J2DBClient(object):
-    def __init__(self, ip_address: str, port: int, table: str = None, secret: str = None):
+    def __init__(
+        self, ip_address: str, port: int, table: str = None, secret: str = None
+    ):
         self.ip_address: str = ip_address
         self.port: int = port
         self.root_url = f"http://{self.ip_address}:{self.port}"
@@ -24,7 +26,9 @@ class J2DBClient(object):
     def heartbeat(self) -> bool:
         return requests.get(self.root_url).ok
 
-    def send(self, content: typing.Union[str, dict], table: str = None, secret: str = None) -> Response:
+    def send(
+        self, content: typing.Union[str, dict], table: str = None, secret: str = None
+    ) -> Response:
         table = table or self.table
         secret = secret or self.secret
         assert table, "no table configured"

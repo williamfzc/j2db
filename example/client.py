@@ -6,7 +6,7 @@ request_data = {
     "table": "some_table",
     "action": "insert",
     "content": json.dumps({"id": 9647, "name": "hello9647"}),
-    "secret": "YOUR_SECRET",
+    "secret": "username:pwd",
 }
 url = "http://127.0.0.1:9410/api/json/form"
 resp = requests.post(url, data=request_data)

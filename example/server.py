@@ -5,11 +5,7 @@ from j2db.auth import AuthManager, AuthUser
 from sqlalchemy import Column, Integer, String
 
 # configure your auth for safety
-test_user = AuthUser(
-    name="username",
-    secret="pwd",
-    allow_table=["some_table"],
-)
+test_user = AuthUser(name="username", secret="pwd", allow_table=["some_table"])
 AuthManager.add(test_user)
 
 

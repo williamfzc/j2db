@@ -25,7 +25,9 @@ class InfoHandler(BaseHandler):
 
         # check
         if info_flag not in info_flag_dict:
-            return errors.InfoFlagNotFoundError(f"{info_flag} is not in {info_flag_dict.keys()}")
+            return errors.InfoFlagNotFoundError(
+                f"{info_flag} is not in {info_flag_dict.keys()}"
+            )
 
         return info_flag_dict[info_flag]()
 
@@ -34,7 +36,9 @@ class InfoHandler(BaseHandler):
 
 
 class EventHandlerHookMixin(object):
-    default_hook: typing.Callable[["EventHandler", EventModel], EventModel] = lambda h, e: e
+    default_hook: typing.Callable[
+        ["EventHandler", EventModel], EventModel
+    ] = lambda h, e: e
     before_auth = default_hook
     after_auth = default_hook
     before_format_check = default_hook
