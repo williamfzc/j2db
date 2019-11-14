@@ -30,8 +30,10 @@ class BaseManager(object):
     def build_connect_command(self):
         raise NotImplementedError
 
-    def connect(self, *args, **kwargs):
-        self.engine = create_engine(self.build_connect_command(), pool_pre_ping=True, *args, **kwargs)
+    def connect(self, pool_pre_ping: bool = True, *args, **kwargs):
+        self.engine = create_engine(
+            self.build_connect_command(), pool_pre_ping=pool_pre_ping, *args, **kwargs
+        )
         self.session_maker = scoped_session(sessionmaker(bind=self.engine))
         assert self.heartbeat(), "connect failed"
         logger.info("connected")
