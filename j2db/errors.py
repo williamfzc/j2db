@@ -43,7 +43,7 @@ def db_operator_error(origin_request: EventModel, error: str) -> typing.Dict[str
     }
 
 
-def null_error(origin_request: EventModel) -> typing.Dict[str, str]:
+def null_error(origin_request: EventModel) -> typing.Dict[str, typing.Any]:
     return {
         "error": EMPTY_VALUE,
         "msg": EMPTY_VALUE,

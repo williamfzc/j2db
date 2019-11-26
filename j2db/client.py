@@ -14,10 +14,10 @@ class J2DBClient(object):
         self.root_url = f"http://{self.ip_address}:{self.port}"
         self.upload_url = f"{self.root_url}/api/json/form"
 
-        self.table: str = table
+        self.table: str = table or ""
         # support insert only
         self.action: str = "insert"
-        self.secret: str = secret
+        self.secret: str = secret or ""
 
         # check
         logger.info(f"bind to server: {self.root_url}")

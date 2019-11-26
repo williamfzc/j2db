@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 from loguru import logger
+import typing
 
 from j2db import constants
 from j2db import router
@@ -21,8 +22,8 @@ class Server(object):
         if not port:
             port = constants.PORT
         self.port: int = port
-        self.db_manager: BaseManager = db_manager
-        self.handler: EventHandler = handler
+        self.db_manager: typing.Optional[BaseManager] = db_manager
+        self.handler: typing.Optional[EventHandler] = handler
 
     def init_db(self, db: BaseManager, create_tables: bool = None):
         self.db_manager = db

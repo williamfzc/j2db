@@ -36,17 +36,17 @@ class InfoHandler(BaseHandler):
 
 
 class EventHandlerHookMixin(object):
-    default_hook: typing.Callable[
-        ["EventHandler", EventModel], EventModel
-    ] = lambda h, e: e
-    before_auth = default_hook
-    after_auth = default_hook
-    before_format_check = default_hook
-    after_format_check = default_hook
-    before_table_check = default_hook
-    after_table_check = default_hook
-    before_operation = default_hook
-    after_operation = default_hook
+    def _default_hook(self, em: EventModel) -> EventModel:
+        return em
+
+    before_auth = _default_hook
+    after_auth = _default_hook
+    before_format_check = _default_hook
+    after_format_check = _default_hook
+    before_table_check = _default_hook
+    after_table_check = _default_hook
+    before_operation = _default_hook
+    after_operation = _default_hook
 
 
 class EventHandler(BaseHandler, EventHandlerHookMixin):

@@ -26,7 +26,7 @@ class EventModel(object):
         self.content = content
         self.secret = secret
 
-    def to_dict(self):
+    def to_dict(self,):
         return self.__dict__
 
     def __str__(self):
