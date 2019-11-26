@@ -29,6 +29,9 @@ class EventModel(object):
     def to_dict(self,):
         return self.__dict__
 
+    def drop_secret(self):
+        self.secret = "******"
+
     def __str__(self):
         return json.dumps(self.__dict__)
 

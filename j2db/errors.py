@@ -7,6 +7,14 @@ from j2db.models import EventModel
 EMPTY_VALUE = ""
 
 
+def safe_error(func):
+    def wrapper(origin_request: EventModel, *args, **kwargs):
+        origin_request.drop_secret()
+        return func(origin_request, *args, **kwargs)
+    return wrapper
+
+
+@safe_error
 def auth_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     return {
         "error": "auth_invalid",
@@ -16,6 +24,7 @@ def auth_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     }
 
 
+@safe_error
 def json_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     return {
         "error": "json_invalid",
@@ -25,6 +34,7 @@ def json_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     }
 
 
+@safe_error
 def table_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     return {
         "error": "table_invalid",
@@ -34,6 +44,7 @@ def table_invalid_error(origin_request: EventModel) -> typing.Dict[str, str]:
     }
 
 
+@safe_error
 def db_operator_error(origin_request: EventModel, error: str) -> typing.Dict[str, str]:
     return {
         "error": "db_operator",
@@ -43,6 +54,7 @@ def db_operator_error(origin_request: EventModel, error: str) -> typing.Dict[str
     }
 
 
+@safe_error
 def null_error(origin_request: EventModel) -> typing.Dict[str, typing.Any]:
     return {
         "error": EMPTY_VALUE,
