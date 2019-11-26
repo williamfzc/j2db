@@ -1,0 +1,6 @@
+{
+  "include": [
+    "j2db"
+  ],
+  "reportMissingImports": false
+}
